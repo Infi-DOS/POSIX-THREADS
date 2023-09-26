@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <time.h>
 
-//Two 1-dimensional arrays of 10^6 numbers  A(1)=1, A(2)=2, … A(10^6 )=10^6 .
+//Two 1-dimensional arrays of 10^6 numbers  A(1)=1, A(2)=2, â€¦ A(10^6 )=10^6 .
 //Compute the B(i)=square(A(i))  in: a) single thread b) four threads.
 //Check the difference in the execution time.
 
@@ -16,7 +16,7 @@ double A[ARRAY_SIZE], B[ARRAY_SIZE];                    // global arrays
 
 void* creatingarray(void* arg)                          //function that creates array A
 {
-    int index = *(int*)arg;
+    int index = *((int*)arg);
     for (int k=index; k<index+ARRAY_SIZE/number_of_threads; k++)
     {
         A[k]=(k+1);
@@ -26,6 +26,7 @@ void* creatingarray(void* arg)                          //function that creates 
         //printf("%13.0f\t",A[k]);
         //printf("%d\n",k+1);
     }
+    free(arg);
 }
 void* squaring(void* arg)                              //function that computes array B[i]=(A[i])^2
 {
@@ -71,6 +72,7 @@ void* squaring(void* arg)                              //function that computes 
          {
              printf("\n%d",i);
              perror("Failed to create thread!");
+             free(a);
              return i+1;
          }//else printf("\nStarted Succesfully!\n");
      }
@@ -81,6 +83,7 @@ void* squaring(void* arg)                              //function that computes 
              perror("Failed to join thread!");
              return i+1;
          }//else printf("\nFinished Succesfully!\n");
+         free(a);
 
      }
      clock_gettime(CLOCK_REALTIME, &end);                       //Counter here stops
